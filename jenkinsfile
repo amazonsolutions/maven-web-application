@@ -1,0 +1,28 @@
+node('nodes')
+{
+
+def mavenHome = tool name: "maven3.6.3"
+
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '3', daysToKeepStr: '', numToKeepStr: '3')), pipelineTriggers([pollSCM('* * * * *')])])
+
+stage('CheckoutCode')
+{
+git branch: 'development', credentialsId: '347c3760-8e63-4289-9fe9-0a03f8442491', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
+}
+
+stage('Build')
+{
+sh "${mavenHome}/bin/mvn clean package"
+}
+
+/*
+stage('ExecuteSonarQubeReport')
+{
+sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+
+ 
+stage('UploadArtifactsIntoNexus')
+{
+sh "${mavenHome}/bin/mvn deploy"
+}
